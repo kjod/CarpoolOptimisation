@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>OpenLayers Basic Example</title>
+
+    <script src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script>
+      function init() {
+		alert("t");
+		var file = "cord.txt";
+	alert("b");
+	var reader = new FileReader();
+		console.log(this.result);
+
+    // By lines
+		var lines = this.result.split('\n');
+		alert(lines);
+		for(var line = 0; line < lines.length; line++){
+			console.log(lines[line]);
+		}
+		reader.readAsText(file);
+        map = new OpenLayers.Map("mapdiv");
+        var mapnik = new OpenLayers.Layer.OSM();
+        map.addLayer(mapnik);
+
+        var lonlat = new OpenLayers.LonLat(-8.471843,51.896596).transform(
+            new OpenLayers.Projection("EPSG:4326"), // transform from WGS 1984
+            new OpenLayers.Projection("EPSG:900913") // to Spherical Mercator
+          );
+
+        var zoom = 13;
+
+        /*var markers = new OpenLayers.Layer.Markers( "Markers" );
+        map.addLayer(markers);
+        markers.addMarker(new OpenLayers.Marker(lonlat));
+		*/
+		var lineLayer = new OpenLayers.Layer.Vector("Line Layer"); 
+
+		map.addLayer(lineLayer);                   
+		map.addControl(new OpenLayers.Control.DrawFeature(lineLayer, OpenLayers.Handler.Path));                                     
+		var points = new Array(
+			new OpenLayers.Geometry.Point(-8.474284, 60.89838),
+			new OpenLayers.Geometry.Point(-8.471843,51.896596)
+		);
+		
+		var line = new OpenLayers.Geometry.LineString(points);
+
+		var style = { 
+			strokeColor: '#000000', 
+			strokeOpacity: 1,
+			strokeWidth: 400
+		};
+
+		var lineFeature = new OpenLayers.Feature.Vector(line, null, style);
+		lineLayer.addFeatures([lineFeature]);
+		//map.addLayer(lineLayer);
+		
+        map.setCenter(lonlat, zoom);
+      }
+	  
+	  
+    </script>
+
+    <style>
+    #mapdiv { width:350px; height:250px; }
+    div.olControlAttribution { bottom:3px; }
+    </style>
+
+</head>
+
+<body onload="init();">
+    <p>My HTML page with an embedded map</p>
+    <div id="mapdiv"></div>
+</body>
+</html>
